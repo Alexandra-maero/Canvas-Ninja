@@ -11,7 +11,8 @@ var dir = 0;
 var pause = true;
 var score = 0;
 var food = null;
-
+var wall = new Array();
+var gameover = true;
 
 window.requestAnimationFrame = (function () {
     return window.requestAnimationFrame ||
@@ -42,7 +43,6 @@ function Rectangle(x, y, width, height) {
                 this.y + this.height > rect.y);
         }
     };
-
     this.fill = function (ctx) {
         if (ctx == null) {
             window.console.warn('Missing parameters on function fill');
@@ -55,20 +55,27 @@ function Rectangle(x, y, width, height) {
 function random(max) {
     return Math.floor(Math.random() * max);
 }
-
+function reset() {
+    score = 0;
+    dir = 1;
+    player.x = 40;
+    player.y = 40;
+    food.x = random(canvas.width / 10 - 1) * 10;
+    food.y = random(canvas.height / 10 - 1) * 10;
+    gameover = false;
+}
 function paint(ctx) {
+    var i = 0,
+        l = 0;
     // Clean canvas
     ctx.fillStyle = '#F4F1BB';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     // Draw player
-    ctx.fillStyle = '#0f0';
+    ctx.fillStyle = '#4c1e45';
     player.fill(ctx);
     // Draw food
-    ctx.fillStyle = '#f00';
+    ctx.fillStyle = '#efc12d';
     food.fill(ctx);
-    /* Draw square
-    ctx.fillStyle = '#ff637d';
-    ctx.fillRect(x, y, 10, 10);*/
     // Debug last key pressed
     ctx.fillStyle = '#fff';
     //ctx.fillText('Last Press: ' + lastPress, 0, 20);
@@ -76,18 +83,29 @@ function paint(ctx) {
     ctx.fillText('Score: ' + score, 0, 10);
     // Draw pause
     if (pause) {
+        // Draw pause
         ctx.textAlign = 'center';
-        ctx.fillText('PAUSE', 150, 75);
+        if (gameover) {
+            ctx.fillText('GAME OVER', 150, 75);
+        } else {
+            ctx.fillText('PAUSE', 150, 75);
+        }
         ctx.textAlign = 'left';
     }
+    // Draw walls
+    ctx.fillStyle = '#999';
+    for (i = 0, l = wall.length; i < l; i += 1) {
+        wall[i].fill(ctx);
+    }    
 }
-
 function act(){
+    var i,
+        l;
     if (!pause) {
-        /*x += 2;
-        if (x > canvas.width) {
-            x = 0;
-        }*/
+        // GameOver Reset
+        if (gameover) {
+            reset();
+        }        
         // Change Direction
         if (lastPress == KEY_UP) {
             dir = 0;
@@ -133,6 +151,18 @@ function act(){
             food.x = random(canvas.width / 10 - 1) * 10;
             food.y = random(canvas.height / 10 - 1) * 10;
         }
+        // Wall Intersects
+        for (i = 0, l = wall.length; i < l; i += 1) {
+            if (food.intersects(wall[i])) {
+                food.x = random(canvas.width / 10 - 1) * 10;
+                food.y = random(canvas.height / 10 - 1) * 10;
+            }
+
+            if (player.intersects(wall[i])) {
+                gameover = true;
+                pause = true;
+            }
+        }
     }
     // Pause/Unpause
     if (lastPress == KEY_ENTER) {
@@ -150,6 +180,11 @@ function run(){
     act();
 }
 function init() {
+    // Create walls
+    wall.push(new Rectangle(100, 50, 10, 10));
+    wall.push(new Rectangle(100, 100, 10, 10));
+    wall.push(new Rectangle(200, 50, 10, 10));
+    wall.push(new Rectangle(200, 100, 10, 10));
     // Get canvas and context
     canvas = document.getElementById('canvas');
     ctx = canvas.getContext('2d');
