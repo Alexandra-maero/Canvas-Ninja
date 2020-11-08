@@ -1,4 +1,5 @@
 /*jslint bitwise:true, es5: true */
+    
 (function (window, undefined) {
     var canvas = undefined,
         ctx = undefined;
@@ -25,6 +26,14 @@
         acumDelta = 0;
         x = 50,
         y = 50;
+    
+    function resize(){
+        var w = window.innerWidth / canvas.width;
+        var h = window.innerHeight / canvas.height;
+        var scale = Math.min(h, w);
+        canvas.style.width = (canvas.width * scale) + 'px';
+        canvas.style.height = (canvas.height * scale) + 'px';
+    } 
 
     window.requestAnimationFrame = (function () {
         return window.requestAnimationFrame ||
@@ -108,7 +117,7 @@
             //body[i].fill(ctx);
             ctx.drawImage(iBody, body[i].x, body[i].y);
         }
-        ctx.fillText('FPS: ' + FPS, 10, 10);
+        //ctx.fillText('FPS: ' + FPS, 10, 10);
         // Draw food
         //ctx.fillStyle = '#efc12d';
         //food.fill(ctx);
@@ -272,6 +281,7 @@
         // Get canvas and context
         canvas = document.getElementById('canvas');
         ctx = canvas.getContext('2d');
+        window.addEventListener('resize', resize, false);
         // Create  food
         food = new Rectangle(80, 80, 10, 10);
         //start game
