@@ -136,7 +136,11 @@
             wall[i].fill(ctx);
         }  */  
     }
-    function act(){
+    function act(deltaTime){
+        x += 120 * deltaTime;
+        if (x > canvas.width) {
+            x = 0;
+        }
         var i = 0,
             l = 0;
         if (!pause) {
@@ -256,7 +260,7 @@
             frames = 0;
             acumDelta -= 1;
         }
-        act();
+        act(deltaTime);
         paint(ctx);
     }
     function init() {
@@ -283,7 +287,6 @@
         //aEat.src = 'img/chomp1.oga';
         //aDie.src = 'img/die.oga';
         run ();
-        act();
         repaint();
     }
 
