@@ -130,7 +130,7 @@
             scenes[currentScene].paint(ctx);
         }
     }
-    function sendinformacion (score){
+    function sendinformation (score){
         fetch(`https://jsonplaceholder.typicode.com/users?posts=${score}`, {
             method: 'GET'
         })
@@ -268,7 +268,7 @@
         if (!pause) {
             // GameOver Reset
             if (gameover) {
-                loadScene(highscoresScene);
+                loadScene(highscoreScene);
             }      
             // Move Body
             for (i = body.length - 1; i > 0; i -= 1) {
@@ -340,7 +340,7 @@
             if (body[0].intersects(food)) {
                 body.push(new Rectangle(food.x, food.y, 10, 10));
                 score += 1;
-                sendinformacion(score)
+                sendinformation(score)
                 food.x = random(canvas.width / 10 - 1) * 10;
                 food.y = random(canvas.height / 10 - 1) * 10;
                 aEat.play();
@@ -348,7 +348,7 @@
             // Fruit intersects
             if (body[0].intersects(fruit)) {
                 score += 5;
-                sendinformacion(score)
+                sendinformation(score)
                 aEat.play();
                 fruit.x = canvas.width+1;
                 fruit.y = null;
@@ -375,9 +375,10 @@
             pause = !pause;
             lastPress = undefined;
         }
-        // Highscore Scene
-        highscoresScene = new Scene();
-        highscoresScene.paint = function (ctx) {
+    };    
+    // Highscore Scene
+    highscoreScene = new Scene();
+    highscoreScene.paint = function (ctx) {
         var i = 0,
         l = 0;
     
@@ -400,13 +401,12 @@
             }
         }
     };
-    highscoresScene.act = function () {
+    highscoreScene.act = function () {
         // Load next scene
         if (lastPress === KEY_ENTER) {
             loadScene(gameScene);
             lastPress = null;
         }
     };
-    }
     window.addEventListener('load', init, false);
 }(window));
