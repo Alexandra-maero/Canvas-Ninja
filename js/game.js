@@ -383,7 +383,7 @@
         l = 0;
     
         // Clean canvas
-        ctx.fillStyle = '#030';
+        ctx.fillStyle = '#4c1e45';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
     
         // Draw title
