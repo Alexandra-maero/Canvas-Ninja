@@ -1,5 +1,4 @@
 /*jslint bitwise:true, es5: true */
-    
 (function (window, undefined) {
     'use strict';
     var KEY_ENTER = 13,
@@ -7,26 +6,21 @@
         KEY_UP = 38,
         KEY_RIGHT = 39,
         KEY_DOWN = 40;
-    
     var canvas = undefined,
         ctx = undefined;
     var lastPress = undefined;
     var pause = false;
     var gameover = false;
-    
     var dir = 0;
     var body = [];
     var score = 0;
     var food = undefined;
     var fruit = undefined;
-    //var wall = new Array();
-    
     var iBody = new Image(),
         iFood = new Image();
     var iStar = new Image();
     var aEat = new Audio(),
         aDie = new Audio();
-    
     var currentScene = 0,
         scenes = [];
     var mainScene = undefined,
@@ -43,14 +37,12 @@
                 window.setTimeout(callback, 17);
             };
     }());
-
     document.addEventListener('keydown', function (evt) {
         if (evt.which >= 37 && evt.which <= 40) {
             evt.preventDefault();
         }
         lastPress = evt.which;
     }, false);
-
     function Rectangle(x, y, width, height) {
         this.x = (x === undefined) ? 0 : x;
         this.y = (y === undefined) ? 0 : y;
@@ -114,7 +106,6 @@
         }
         localStorage.highscores = highscores.join(',');
     }
-    
     function canPlayOgg() {
         var aud = new Audio();
         if (aud.canPlayType('audio/ogg').replace(/no/, '')) {
@@ -123,7 +114,6 @@
             return false;
         }
     }
-    
     function repaint() {
         window.requestAnimationFrame(repaint);
         if (scenes.length) {
@@ -150,15 +140,9 @@
         }
     }
     function init() {
-        /* Create walls
-        wall.push(new Rectangle(100, 50, 10, 10));
-        wall.push(new Rectangle(100, 100, 10, 10));
-        wall.push(new Rectangle(200, 50, 10, 10));
-        wall.push(new Rectangle(200, 100, 10, 10));*/
         // Get canvas and context
         canvas = document.getElementById('canvas');
         ctx = canvas.getContext('2d');
-        
         // Load assets
         if (canPlayOgg()) {
             aEat.src="img/chomp1.oga";
@@ -170,7 +154,6 @@
         iBody.src = 'img/body.png';
         iFood.src = 'img/fruit.png';
         iStar.src = 'img/star.png';
-
         // Create  food
         food = new Rectangle(80, 80, 10, 10);
         // Create  fruit
@@ -183,22 +166,18 @@
         run ();
         repaint();
     }
-
     // Main Scene
     mainScene = new Scene();
-
     mainScene.paint = function (ctx) {
         // Clean canvas
         ctx.fillStyle = '#4c1e45';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
-
         // Draw title
         ctx.fillStyle = '#fff';
         ctx.textAlign = 'center';
         ctx.fillText('SNAKE', 150, 60);
         ctx.fillText('Press Enter', 150, 90);
     };
-    
     mainScene.act = function () {
         // Load next scene
         if (lastPress === KEY_ENTER) {
@@ -206,10 +185,8 @@
             lastPress = null;
         }
     };
-    
     // Game Scene
     gameScene = new Scene();
-
     gameScene.load = function () {
         score = 0;
         dir = 1;
@@ -221,7 +198,6 @@
         food.y = random(canvas.height / 10 - 1) * 10;
         gameover = false;
     };
-
     gameScene.paint = function (ctx) {
         var i = 0,
             l = 0;
@@ -238,7 +214,6 @@
         food.drawImage(ctx, iFood);
         // Draw fruit
         window.setTimeout(fruit.drawImage(ctx, iStar), random(300)+5000)
-    
         // Debug last key pressed
             //ctx.fillText('Last Press: ' + lastPress, 0, 20);
         // Draw score
@@ -254,13 +229,7 @@
             }
             ctx.textAlign = 'left';
         }
-        /* Draw walls
-        ctx.fillStyle = '#999';
-        for (i = 0, l = wall.length; i < l; i += 1) {
-            wall[i].fill(ctx);
-        }  */  
     }
-
     gameScene.act = function (){
         var i = 0,
             l = 0;
@@ -300,19 +269,6 @@
             if (dir === 3) {
                 body[0].x -= 10;
             }
-            /* Move Rect
-            if (dir == 0) {
-                body[0].y -= 10;
-            }
-            if (dir == 1) {
-                body[0].x += 10;
-            }
-            if (dir == 2) {
-                body[0].y += 10;
-            }
-            if (dir == 3) {
-                body[0].x -= 10;
-            }*/
             // Out Screen
             if (body[0].x > canvas.width - body[0].width) {
                 body[0].x = 0;
@@ -356,18 +312,6 @@
                     fruit.y = random(canvas.height / 10 - 1) * 10;
                 }, random(3000)+5000)
             }
-            /* Wall Intersects
-            for (i = 0, l = wall.length; i < l; i += 1) {
-                if (food.intersects(wall[i])) {
-                    food.x = random(canvas.width / 10 - 1) * 10;
-                    food.y = random(canvas.height / 10 - 1) * 10;
-                }
-
-                if (body[0].intersects(wall[i])) {
-                    gameover = true;
-                    pause = true;
-                }
-            }*/
         }
         // Pause/Unpause
         if (lastPress === KEY_ENTER) {
@@ -380,16 +324,13 @@
     highscoreScene.paint = function (ctx) {
         var i = 0,
         l = 0;
-    
         // Clean canvas
         ctx.fillStyle = '#4c1e45';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
-    
         // Draw title
         ctx.fillStyle = '#fff';
         ctx.textAlign = 'center';
         ctx.fillText('HIGH SCORES', 150, 30);
-    
         // Draw high scores
         ctx.textAlign = 'right';
         for (i = 0, l = highscores.length; i < l; i += 1) {
