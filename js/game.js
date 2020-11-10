@@ -137,11 +137,10 @@
         .then(function(response) {
             if(response.ok) {
                 console.log('Score sent successfully');
-                console.log(response);
             }
         })
         .catch(function(err) {
-            console.log('Error trying to send the score');
+            console.log(`Error trying to send the score ${err}`);
         });
     }
     function run(){
